@@ -1,0 +1,128 @@
+﻿<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MotoLog</title>
+  <link rel="stylesheet" href="motlog.css">
+</head>
+<body>
+
+  <main id="mainApp" class="page-wrap">
+    <section id="authCard" class="auth-card" aria-labelledby="pageTitle">
+      <a class="brand" href="#app" aria-label="MotoLog 처음으로">Moto<span>Log</span></a>
+      <p class="eyebrow">나의 바이크 기록장</p>
+      <p id="authModeLabel" class="mode-label">로그인</p>
+      <h1 id="pageTitle">MotoLog에 로그인하세요</h1>
+      <p class="intro">바이크와 라이딩 기록을 한곳에서 관리할 수 있습니다.</p>
+      <div id="messageBox" class="message" role="status" aria-live="polite" hidden></div>
+      <form id="authForm" novalidate>
+        <div class="field"><label for="emailInput">이메일</label><input id="emailInput" type="email" autocomplete="email" required placeholder="name@example.com"><p id="emailError" class="field-error"></p></div>
+        <div class="field"><label for="passwordInput">비밀번호</label><input id="passwordInput" type="password" autocomplete="current-password" required minlength="6" placeholder="6자 이상 입력하세요"><p id="passwordError" class="field-error"></p></div>
+        <div id="passwordConfirmField" class="field password-confirm-field" aria-hidden="true"><label for="passwordConfirmInput">비밀번호 확인</label><input id="passwordConfirmInput" type="password" autocomplete="new-password" disabled placeholder="비밀번호를 한 번 더 입력하세요"><p id="passwordConfirmError" class="field-error"></p></div>
+        <button id="submitButton" class="primary-button" type="submit">로그인</button>
+      </form>
+      <p id="modeSwitch" class="mode-switch"><span id="modeQuestion">처음 이용하시나요?</span> <button id="modeButton" type="button" class="text-button">회원가입</button></p>
+    </section>
+
+    <section id="appShell" class="app-shell" hidden>
+      <header class="app-header"><button id="homeButton" class="brand brand-button" type="button">Moto<span>Log</span></button><div class="header-actions"><span id="headerUserEmail" class="header-email"></span><button id="memberButton" class="header-logout" type="button">회원 정보</button><button id="logoutButton" class="header-logout" type="button">로그아웃</button></div></header>
+      <nav class="tabs" aria-label="MotoLog 메뉴"><button class="tab-button" type="button" data-tab="dashboard" aria-current="page">대시보드</button><button class="tab-button" type="button" data-tab="bikes">내 바이크</button><button class="tab-button" type="button" data-tab="rides">라이딩 로그</button><button class="tab-button" type="button" data-tab="maintenance">정비 기록</button></nav>
+      <div id="appMessageBox" class="message app-message" role="status" aria-live="polite" hidden></div>
+      <section id="memberPanel" class="member-panel" hidden aria-labelledby="memberTitle"><div class="result-heading"><div><p class="eyebrow">회원 정보</p><h1 id="memberTitle">내 계정</h1></div><button id="closeMemberButton" class="small-button" type="button">닫기</button></div><form id="memberForm" class="member-form" novalidate><div class="field"><label for="memberEmailInput">이메일</label><input id="memberEmailInput" type="email" readonly></div><div class="field"><label for="displayNameInput">닉네임</label><input id="displayNameInput" maxlength="50" placeholder="표시할 닉네임을 입력하세요"><p id="displayNameError" class="field-error"></p></div><button id="saveMemberButton" class="primary-button compact-button" type="submit">저장</button></form></section>
+      <section id="dashboardView" class="tab-view" hidden><p class="eyebrow">대시보드</p><h1>내 바이크 요약</h1><div id="dashboardEmpty" class="empty-card"><p>등록된 바이크가 없습니다.</p><button class="primary-button" type="button" data-open-bike-form>바이크 등록하기</button></div><div id="dashboardContent" hidden><div class="dashboard-bike-select"><label for="dashboardBikeSelect">바이크 선택</label><select id="dashboardBikeSelect"></select></div><article id="dashboardBikeCard" class="bike-summary-card"></article><section class="dashboard-monthly" aria-labelledby="monthlySummaryTitle"><div class="result-heading"><div><p class="eyebrow">이번 달</p><h2 id="monthlySummaryTitle">이번 달 기록 요약</h2></div><p id="dashboardStatus" class="hint" aria-live="polite"></p></div><div class="dashboard-stat-grid"><article><span>라이딩 횟수</span><strong id="monthlyRideCount">-</strong></article><article><span>총 주행거리</span><strong id="monthlyDistance">-</strong></article><article><span>정비 총비용</span><strong id="monthlyMaintenanceCost">-</strong></article></div><div class="dashboard-actions"><a class="primary-button compact-button" href="#ride-add">라이딩 추가</a><a class="secondary-button compact-button" href="#maintenance-add">정비 추가</a></div></section><section class="dashboard-inspection" aria-labelledby="nextInspectionTitle"><div class="result-heading"><div><p class="eyebrow">다음 점검</p><h2 id="nextInspectionTitle">코드별 다음 점검</h2></div><p id="nextInspectionStatus" class="hint" aria-live="polite"></p></div><p class="inspection-guide">6개월은 앱의 기본 기준이며 제조사 권장 주기와 다를 수 있습니다.</p><div class="inspection-table-wrap"><table class="inspection-table"><thead><tr><th scope="col">항목 코드</th><th scope="col">마지막 정비일</th><th scope="col">예정일</th><th scope="col">남은 일수</th><th scope="col">상태</th></tr></thead><tbody id="nextInspectionList"></tbody></table></div></section><section class="dashboard-recent" aria-labelledby="recentActivitiesTitle"><div class="result-heading"><div><p class="eyebrow">최근 활동</p><h2 id="recentActivitiesTitle">최근 활동 5건</h2></div><p id="recentActivitiesStatus" class="hint" aria-live="polite"></p></div><div id="recentActivitiesList" class="recent-activities"></div></section></div></section>
+      <section id="bikesView" class="tab-view" aria-labelledby="bikeRegisterTitle">
+        <div id="bikeFormPanel"><p class="eyebrow">내 바이크</p><h1 id="bikeRegisterTitle">내 바이크 등록</h1><p class="intro">바이크 정보를 등록하고 라이딩과 정비 기록을 관리하세요.</p><p class="required-guide"><span aria-hidden="true">*</span> 필수 입력 항목입니다.</p>
+          <form id="bikeForm" class="bike-form" novalidate>
+            <fieldset><legend>기본 정보</legend><div class="form-grid"><div class="field"><label for="nicknameInput">바이크 별명</label><input id="nicknameInput" maxlength="50" placeholder="예: 검둥이"><p id="nicknameError" class="field-error"></p></div><div class="field"><label for="manufacturerInput">제조사 <span class="required">*</span></label><input id="manufacturerInput" maxlength="50" required placeholder="예: Honda"><p id="manufacturerError" class="field-error"></p></div><div class="field"><label for="modelInput">모델명 <span class="required">*</span></label><input id="modelInput" maxlength="50" required placeholder="예: GB350"><p id="modelError" class="field-error"></p></div><div class="field"><label for="modelYearInput">연식</label><input id="modelYearInput" type="number" inputmode="numeric" min="1000" max="9999" placeholder="예: 2026"><p id="modelYearError" class="field-error"></p></div><div class="field"><label for="purchaseDateInput">구매일</label><input id="purchaseDateInput" type="date"><p id="purchaseDateError" class="field-error"></p></div></div></fieldset>
+            <fieldset><legend>주행 정보</legend><div class="form-grid one-item"><div class="field"><label for="odometerInput">현재 계기판 주행거리 <span class="required">*</span></label><div class="unit-input"><input id="odometerInput" type="number" inputmode="numeric" min="0" required placeholder="예: 1250"><span>km</span></div><p class="help-text">현재 계기판에 표시된 누적거리를 입력하세요.</p><p id="odometerError" class="field-error"></p></div></div></fieldset>
+            <fieldset><legend>대표 사진 및 메모</legend><div class="photo-note-grid"><div class="field"><label for="photoInput">대표 사진</label><div id="photoPreview" class="photo-preview"><span aria-hidden="true">🏍</span><p>사진 미등록</p></div><input id="photoInput" type="file" accept="image/jpeg,image/png,image/webp"><p class="help-text">JPEG·PNG·WebP, 최대 5MB (임시 기준)</p><button id="removePhotoButton" class="small-button" type="button" disabled>사진 선택 취소</button><p id="photoError" class="field-error"></p></div><div class="field"><label for="notesInput">메모</label><textarea id="notesInput" maxlength="2000" rows="8" placeholder="바이크에 대한 메모를 입력하세요."></textarea><p class="help-text"><span id="notesCount">0</span> / 2,000자</p><p id="notesError" class="field-error"></p></div></div></fieldset>
+            <div class="form-actions"><button id="cancelBikeButton" class="secondary-button" type="button">취소</button><button id="saveBikeButton" class="primary-button" type="submit">바이크 등록</button></div>
+          </form>
+        </div>
+        <section id="bikeResultPanel" hidden><div class="result-heading"><div><p class="eyebrow">등록 완료</p><h1>내 바이크</h1></div><div class="result-actions"><button id="newBikeButton" class="secondary-button compact-button" type="button">새 바이크 등록</button></div></div><div id="bikeList" class="bike-list"></div><div id="photoRetryBox" class="photo-retry" hidden><p id="photoRetryText"></p><button id="retryPhotoButton" class="secondary-button" type="button">사진 업로드 다시 시도</button></div></section>
+      </section>
+      <section id="ridesView" class="tab-view" hidden><div class="result-heading"><div><p class="eyebrow">라이딩 로그</p><h1>라이딩 기록</h1></div><a class="secondary-button compact-button" href="#ride-add">라이딩 추가</a></div><div class="ride-filters"><input id="rideSearch" placeholder="제목·출발지·경유지·도착지 검색"><select id="rideBikeFilter"><option value="">전체 바이크</option></select><input id="rideStartDate" type="date" aria-label="라이딩 시작일"><input id="rideEndDate" type="date" aria-label="라이딩 종료일"><select id="rideTypeFilter"><option value="">전체 라이딩 유형</option></select><select id="rideSort"><option value="recent">최신순</option><option value="oldest">오래된순</option><option value="distance">거리 긴 순</option></select><button id="resetRideFilters" class="secondary-button" type="button">조건 초기화</button></div><p id="rideConditionSummary" class="hint" aria-live="polite"></p><p id="rideStatus" class="hint" aria-live="polite"></p><div class="ride-table-wrap"><table class="ride-table"><thead><tr><th scope="col">라이딩 날짜</th><th scope="col">바이크</th><th scope="col">제목</th><th scope="col">유형</th><th scope="col">주행거리</th><th scope="col">경로</th></tr></thead><tbody id="rideList"></tbody></table></div><button id="moreRides" class="secondary-button" type="button" hidden>더 보기</button></section>
+      <section id="maintenanceView" class="tab-view" hidden><div class="result-heading"><div><p class="eyebrow">정비 기록</p><h1>정비 기록 관리</h1></div><a class="primary-button compact-button" href="#maintenance-add">정비 기록 추가</a></div><p class="intro">정비 방문과 자가 정비 기록을 관리하세요.</p><div class="maintenance-filters"><select id="maintenanceBikeFilter"><option value="">전체 바이크</option></select><select id="maintenanceCodeFilter"><option value="">전체 정비 코드</option></select><input id="maintenanceStartDate" type="date" aria-label="정비 시작일"><input id="maintenanceEndDate" type="date" aria-label="정비 종료일"><input id="maintenanceSearch" placeholder="정비 제목 또는 정비소 검색"></div><p id="maintenanceStatus" class="hint" aria-live="polite"></p><div id="maintenanceList" class="maintenance-visit-list"></div><button id="moreMaintenance" class="secondary-button" type="button" hidden>더 보기</button></section>
+      <dialog id="rideDetailDialog"><div class="dialog-content"><div class="result-heading"><div><p class="eyebrow">라이딩 상세</p><h2 id="rideDetailTitle"></h2></div><button id="closeRideDetail" class="small-button" type="button">닫기</button></div><div id="rideDetailBody" class="ride-detail"></div></div></dialog>
+      <dialog id="maintenanceDetailDialog"><div class="dialog-content"><div class="result-heading"><div><p class="eyebrow">정비 상세</p><h2 id="maintenanceDetailTitle"></h2></div><button id="closeMaintenanceDetail" class="small-button" type="button">닫기</button></div><div id="maintenanceDetailBody" class="ride-detail"></div></div></dialog>
+      <dialog id="recordEditDialog"><div id="recordEditContent" class="dialog-content"></div></dialog>
+    </section>
+  </main>
+  
+
+
+  <section id="ridePage" class="page" hidden>
+    <a class="brand" href="#app">Moto<span>Log</span></a>
+    <section class="card" aria-labelledby="pageTitle">
+      <p class="eyebrow">라이딩 로그</p><h1 id="pageTitle">라이딩 로그 추가</h1>
+      <p class="intro">라이딩 장소와 주행 기록을 남겨 보세요.</p>
+      <div id="message" class="message" role="status" aria-live="polite" hidden></div>
+      <form id="rideForm" novalidate>
+        <div class="grid">
+          <div class="field full"><label for="bike">바이크 <b>*</b></label><select id="bike" required><option value="">바이크를 선택하세요</option></select><p id="bikeError" class="error"></p></div>
+          <div class="field"><label for="titleInput">제목 <b>*</b></label><input id="titleInput" maxlength="100" required placeholder="예: 주말 근교 라이딩"><p id="titleError" class="error"></p></div>
+          <div class="field"><label for="rideType">라이딩 유형 <b>*</b></label><select id="rideType" required></select><p id="typeError" class="error"></p></div>
+          <input id="rideDate" type="hidden">
+          <div class="field"><label for="startLocation">출발지 <b>*</b></label><div class="suggestion-field"><input id="startLocation" maxlength="100" required placeholder="출발 장소"><div id="startSuggestions" class="suggestion-list" hidden></div></div><p id="startError" class="error"></p></div>
+          <div class="field"><label for="endLocation">도착지 <b>*</b></label><div class="suggestion-field"><input id="endLocation" maxlength="100" required placeholder="도착 장소"><div id="endSuggestions" class="suggestion-list" hidden></div></div><p id="endError" class="error"></p></div>
+          <div class="field full route-actions" aria-label="경로 빠른 입력"><button id="swapRoute" type="button" class="secondary">출발지·도착지 교환</button><button id="returnToStart" type="button" class="secondary" disabled>출발지로 복귀</button><p class="hint">복귀를 누르면 도착지가 출발지와 같게 변경됩니다.</p></div>
+          <div class="field"><label for="startedAt">출발 시각</label><input id="startedAt" type="datetime-local"><p id="startedError" class="error"></p></div>
+          <div class="field"><label for="endedAt">도착 시각</label><input id="endedAt" type="datetime-local"><p id="endedError" class="error"></p></div>
+        </div>
+        <section class="waypoint-section">
+          <div class="section-heading"><div><h2>경유지</h2><p>방문 순서대로 추가하세요. 위·아래 버튼으로 순서를 바꿀 수 있습니다.</p></div><button id="addWaypoint" type="button" class="secondary">경유지 추가</button></div>
+          <div id="waypointList"></div><p id="waypointError" class="error"></p>
+        </section>
+        <div class="field"><label for="distance">주행거리 <b>*</b></label><div class="unit"><input id="distance" inputmode="numeric" required placeholder="예: 128"><span>km</span></div><p id="distanceError" class="error"></p></div>
+        <div class="field"><label for="notes">메모</label><textarea id="notes" maxlength="2000" rows="5" placeholder="라이딩 메모를 입력하세요."></textarea><p class="hint"><span id="notesCount">0</span> / 2,000자</p><p id="notesError" class="error"></p></div>
+        <div class="actions"><a class="secondary link-button" href="#app">취소</a><button id="saveButton" class="primary" type="submit">라이딩 로그 저장</button></div>
+      </form>
+    </section>
+  </section>
+  
+  
+  
+  
+
+
+  <section id="maintenancePage" class="page" hidden>
+    <a class="brand" href="#app">Moto<span>Log</span></a>
+    <section class="card">
+      <p class="eyebrow">정비 기록</p>
+      <h1>정비 기록 추가</h1>
+      <p>별표(*) 항목은 필수입니다. 정비 항목은 한 개 이상 입력해 주세요.</p>
+      <div id="msg" class="message" role="status" hidden></div>
+      <form id="maintenanceForm" novalidate>
+        <div class="grid">
+          <div class="field full">
+            <label for="bike">바이크 *</label>
+            <select id="bike" required disabled><option value="">바이크를 불러오는 중입니다.</option></select>
+          </div>
+          <div class="field"><label for="title">정비 제목 *</label><input id="title" maxlength="100" required></div>
+          <div class="field"><label for="maintenanceDate">정비일 *</label><input id="maintenanceDate" type="date" required></div>
+          <div class="field"><label for="odometer">당시 계기판 주행거리</label><input id="odometer" inputmode="numeric" aria-describedby="odometerHelp"><small id="odometerHelp">0 이상의 정수만 입력할 수 있습니다. (km)</small></div>
+          <div class="field"><label for="serviceType">정비 방식 *</label><select id="serviceType" required><option value="shop">정비소</option><option value="self">자가 정비</option><option value="unknown">미확인</option></select></div>
+          <div class="field"><label for="shopName">정비소 이름</label><div class="suggestion-field"><input id="shopName" maxlength="100"><div id="shopSuggestions" class="suggestion-list" hidden></div></div></div>
+          <div class="field"><label for="nextDueDate">다음 점검일</label><input id="nextDueDate" readonly aria-describedby="dueHelp"><small id="dueHelp">정비일을 기준으로 6개월 뒤로 계산됩니다.</small></div>
+        </div>
+        <section class="waypoint-section" aria-labelledby="itemsHeading">
+          <div class="section-heading"><h2 id="itemsHeading">정비 항목</h2><button id="addItemButton" type="button" class="secondary">항목 추가</button></div>
+          <div id="items" aria-live="polite"></div>
+        </section>
+        <p>총비용: <strong id="totalCost">0원</strong></p>
+        <div class="field"><label for="notes">메모</label><textarea id="notes" maxlength="2000"></textarea></div>
+        <div class="actions"><a class="secondary link-button" href="#app">취소</a><button id="saveButton" class="primary" type="submit">저장</button></div>
+      </form>
+    </section>
+  </section>
+  
+  
+  
+  
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="motlog.js"></script>
+</body>
+</html>
+
